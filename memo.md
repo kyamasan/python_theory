@@ -448,3 +448,366 @@ import numpy as np
 //numpy のファイルの場所を表示
 np.__file__
 ```
+
+### Array を作る方法
+
+numpy での array は ndarray とも呼ばれる(Numpy Dimention Array)
+
+```py
+np.array([1,2,3])
+
+np.array([[1,2,3],[4,5,6],[7,8,9]])
+```
+
+array は変数に格納することもできる。
+
+```py
+matrix = np.array([[1,2,3],[4,5,6],[7,8,9]])
+matrix[0]
+matrix[0][0]
+```
+
+datatype は、int ではなく numpy.int64 となる。
+numpy の各要素は numpy.int64 という Numpy 独自の DataType で格納されている点は注意が必要。
+
+```py
+type(matrix[0][0])
+```
+
+dtype=で numpy の要素の DataType を変更することも可能。
+uint は unsigned(+や-を持たない)の略
+uint8 は 2 の 8 乗で 256 の正の値(0~255)を意味する。
+
+float32 は小数点を持つ値。データサイエンスでは小数点レベルでの計算が必須。
+float64 は細かくデータ管理できるので、保存には向かない。
+
+```py
+matrix = np.array([[1,2,3],[4,5,6],[7,8,9]], dtype=uint8)
+matrix = np.array([[1,2,3],[4,5,6],[7,8,9]], dtype=float32)
+```
+
+astype で元の Array の Datatype を変更することも可能。
+
+```py
+matrix.astype(np.uint8)
+```
+
+### BroadCasting
+
+numpy の Array は Array 同士で計算が可能。
+要素が足りない Array の計算でも自動に補完してくれる機能が Numpy にはある。
+これを BroadCasting という。
+これは List ではできない機能なので注意。
+
+```py
+array1 = np.array([[1,2,3],[4,5,6],[7,8,9]])
+array2 = np.array([1,2,3])
+
+array([[ 2,  4,  6],
+       [ 5,  7,  9],
+       [ 8, 10, 12]])
+
+list1 = [1,2,3]
+```
+
+### Shape
+
+Shape が異なる行列(複数の行と列が存在する要素)同士を演算した時に、BroadCasting 可能な行列同士であれば補完できる。
+shape で行列の形を確認できる。基本的に Array を作ったら Shape で型を確認する。
+要素の数が有っていれば、3 行 2 列 ⇒2 行 3 列のように reshape することができる。
+
+```py
+array1 = np.array([[1,2],[3,4],[5,6]])
+array1.shape
+array1.reshape(2, 3)
+```
+
+行列とリストでは Shape が異なる点に注意。
+
+array1 = np.array([1,2,3])
+array2 = np.array([[1,2,3]])
+array1.shape
+⇒(3,)
+array2.shape
+⇒(1, 3)
+
+### indexing
+
+index は 0 で最初、-1 で最後の要素を取得できた。
+
+ndarray = np.array([1,2,3,4])
+
+ndarray[0]
+⇒1
+
+ndarray[-1]
+⇒4
+
+多次元配列では ndarray[0,1]のように書くと、0 行目の 2 列目という意味になる。
+ndarray = np.array([[1,2],[3,4],[5,6]])
+ndarray[0,1]
+⇒2
+
+### slicing
+
+ndarray = np.array([1,2,3,4])
+ndarray[1:3] インデックス 1 以上 3 未満
+⇒2,3
+
+ndarray[:3] インデックス 3 未満
+⇒1,2,3
+
+ndarray[1:] インデックス 1 以上
+⇒2,3,4
+
+インデックスがマイナスの場合は、順序が逆転する。
+4 がインデックス-1、3 がインデックス-2、2 がインデックス-3、1 がインデックス-4 となる。
+
+ndarray[-2]
+⇒3
+
+ndarray[-2:] インデックス -2 以上
+⇒3,4
+
+ndarray[:-2] インデックス -2 未満
+⇒1,2
+
+ndarray[:]
+⇒1,2,3,4
+
+多次元の場合
+
+ndarray = np.array([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]])
+
+ndarray[:3] インデックス 3 未満の行
+⇒[1,2,3,4],[5,6,7,8],[9,10,11,12]
+
+ndarray[:3, 2:] インデックス 3 未満の行のインデックス 2 以上
+⇒[3,4],[7,8],[11,12]
+
+ndarray[:3][2:]
+⇒[9,10,11,12]
+
+ndarray[:, 2:] 全行のインデックス 2 以上
+⇒[3,4],[7,8],[11,12],[15,16]
+
+### 関数で Array を作成する方法
+
+np.arange(start = 0, stop, step = 1)
+
+start 以上、stop 未満の要素を step 間隔で作成してくれる関数
+start、step は省略可能
+range 関数と同様。
+
+np.linspace(start, stop, num = 50)
+
+start 以上、stop 以下の数字を num 個で区切った値を出力する。
+stop を含む点に注意。
+
+np.logspace(start, stop, num = 50)
+10 の start 乗から、10 の stop 乗の値を num 個で区切った値を出力する。
+
+np.logspace(0,3,10)だと、10 の 0.3 乗=1.99 が 2 番目の数値となる。
+
+endpoint=false を第 4 引数にすると、最後の数字は出力されない。
+
+### その他の関数
+
+shape = (3,4)
+np.zeros(shape)
+
+要素が全て 0 の Array を指定した shape で作成できる。
+
+shape = (3,4)
+np.ones(shape)\*5
+
+要素が全て 1 の Array を指定した shape で作成できる。
+初期値をかけることで、全ての要素が初期値の Array を作成できる。
+
+np.eye()
+N×N の単位行列(対角成分が全て 1 の行列)を作成
+
+### 乱数生成
+
+★np.random に続く形で乱数を生成する。
+
+np.random.rand()
+⇒ 毎回違う 0 ～ 1 までの値を生成
+
+★rand()の前に seed を指定すると、毎回同じ乱数を生成することができる。
+再現性の為に乱数生成には seed を指定する方が良い。
+
+np.random.seed(1)
+np.random.rand()
+
+### 正規分布
+
+np.random.randn(shape)
+⇒ 標準正規分布(平均 0、分散 1)に従って、0 が一番出てくる可能性が高い乱数を生成する。
+
+np.random.normal()
+⇒ 標準ではない正規分布を任意で指定できる。
+
+np.random.randint(10,100,(2,3))
+⇒10 以上、100 未満のランダムなサイズの Array を生成
+
+np.random.randint(10)
+⇒low だけ指定した場合は 0 以上 low 未満
+
+a = [1,2,3]
+np.random.choice(a)
+⇒Array の中からランダムな値を抽出できる。
+
+### 統計量を求める
+
+統計量 ⇒ データの特徴(平均、最大、最小...)を表す
+
+std_norm = np.random.randn(5,5)
+std_norm.max() //最大値(min は最小値)
+※np.max(std_norm) //この書き方でも OK
+
+std_norm.argmax()
+⇒ 最大値の index を取得
+
+std_norm は 5×5 の Array なので、flatten で要素を 1 行にする必要がある。
+std_norm.flatten()[13]
+
+std_norm.mean()
+⇒ 平均値(サンプル数が多いほど 0 に近づくはず)
+
+np.median(std_norm)
+⇒ 中央値(np.median の形でしか使えない)
+並び変えが発生するので、平均値より時間がかかる。外れ値に強い。
+
+np.std(std_norm)
+⇒ 標準偏差(平均との差を 2 乗した合計をデータ数で割った正の平方根)
+
+std_norm.max(axis=0 or 1)
+⇒axis=0 で列ごと、1 で行ごとの統計量を求めることができる。
+
+### 数学で使う関数
+
+np.sqrt([1,2])
+⇒ 平方根
+
+np.log(2)
+⇒ ある値は 2 の何乗かを求める。ログ。
+
+np.exp(1)
+⇒ 指数関数
+
+np.e
+⇒ ネイピア数
+
+np.sum([1,2,3])
+⇒ 加算
+
+np.abs([-1,-2,-3])
+⇒ 絶対値
+
+### NaN の扱い
+
+Not a Number の略
+
+np.isnan()
+⇒np.nan は等式(==, is)に使えないので、nan かどうかのチェックには isnan を用いる。
+
+### Array の条件フィルター
+
+np.clip(array, 3, 7)
+⇒3 以下の値は 3、7 以上の値は 7 として扱う。
+
+np.where(array > 3, a, b)
+⇒ 条件式(array > 3)が True なら a、False なら b になる。
+
+(array > 3).all()
+⇒ 条件式が全て true か
+
+(array > 3).any()
+⇒ 条件式が 1 つでも true か
+
+all も any も axis を引数に取り、行、列ごとに判定にかけることができる。
+
+np.unique()
+⇒ 重複を除いた値を返す
+
+np.unique(array, return_counts = True)
+⇒ 重複を除いた値を返し、かつ各要素のカウントを返す。
+
+np.bincount(array)
+⇒0,1,2,3...と連番のカウントを返してくれる。(unique と違い全く存在しない要素もカウントできる。)
+
+### 結合と転置
+
+np.concatenate
+
+ndarray_even = np.arange(0, 18, 2).reshape(3, 3)
+ndarray_odd = np.arange(1, 19, 2).reshape(3, 3)
+np.concatenate([ndarray_even, ndarray_odd], axis=0)
+⇒
+array([[0,  2,  4],
+       [ 6,  8, 10],
+       [12, 14, 16],
+       [ 1,  3,  5],
+       [ 7,  9, 11],
+       [13, 15, 17]])
+np.concatenate([ndarray_even, ndarray_odd], axis=1)
+⇒
+array([[0,  2,  4,  1,  3,  5],
+       [ 6,  8, 10,  7,  9, 11],
+       [12, 14, 16, 13, 15, 17]])
+
+np.stack([ndarray_even, ndarray_odd], axis=0)
+⇒
+array([[[ 0,  2,  4],
+        [ 6,  8, 10],
+        [12, 14, 16]],
+
+       [[ 1,  3,  5],
+        [ 7,  9, 11],
+        [13, 15, 17]]])
+
+concatenate と stack では実行結果の shape が異なる点に注意。
+stack はデータに奥行きを持たせることができる。axis = -1 を指定する場合が多い。
+
+np.transpose.T
+⇒ 行と列を入れ替えてくれる。(簡易的な書き方として、ndarray.T と書けば、行列入れ替えを行った結果を返してくれる。)
+
+### ndarray の保存とロード
+
+ndarray = np.random.randn(3,4,5)
+ndarray.shape
+np.save("sample.npy", ndarray)
+
+np.load("sample.npy")
+
+ndarray 単体ではなく、何か情報を付与してファイル化することが多い。
+dictionary も保存することができる。
+
+dictionary = {
+'id':123,
+'image':ndarray
+}
+
+np.save("sample.npy", dictionary)
+np.load("sample.npy")
+⇒ValueError: Object arrays cannot be loaded when allow_pickle=False
+
+pickle というのは Python が情報を保存する時の形式のこと。(ピクルスと同じ意味合い)
+allow_pickle=True をセットすれば、dictionary 形式の情報をロードできる。
+
+np.load("sample.npy", allow_pickle=True)
+⇒
+array({'id': 123, 'image': array(...)}, dtype=object)
+array 形式で返ってくる情報の中に、dictionary が含まれている。
+array[()]と指定することで、dictionary を取り出すことができる。
+
+a = np.load("sample.npy", allow_pickle=True)
+a[()]
+⇒
+
+{'id': 123,
+'image': array(...)}
+
+もちろん、この書き方でも OK。
+a = np.load("sample.npy", allow_pickle=True)[()]
